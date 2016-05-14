@@ -1,0 +1,27 @@
+{
+  "name": "zhufengshop",
+  "version": "1.0.0",
+  "description": "这是参照珠峰培训视频建立的一个项目实例",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dankuer/zhufengshop.git"
+  },
+  "keywords": [
+    "bower",
+    "nodejs",
+    "angularjs"
+  ],
+  "author": "dankuer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dankuer/zhufengshop/issues"
+  },
+  "homepage": "https://github.com/dankuer/zhufengshop#readme",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
+}

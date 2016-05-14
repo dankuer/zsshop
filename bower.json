@@ -1,0 +1,29 @@
+{
+  "name": "zhufengshop",
+  "description": "这是参照珠峰培训视频建立的一个项目实例",
+  "main": "index.js",
+  "authors": [
+    "dankuer"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "bower",
+    "nodejs",
+    "angularjs"
+  ],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/public/lib",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.5",
+    "angular-route": "^1.5.5",
+    "bootstrap": "^3.3.6"
+  }
+}
