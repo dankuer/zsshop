@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="shopApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css"/>
+</head>
+<body>
+   <div class="container">
+     <div class="navbar navbar-default navbar-fixed-top" role="navigation" ng-controller="NavBarCtrl">
+       <div class="navbar-header">
+           <a href="#" class="navbar-brand">珠峰商城</a>
+       </div>
+       <ul class="nav navbar-nav">
+           <li><a href="#/home">首页</a></li>
+           <li><a href="#/users/reg">注册</a></li>
+           <li><a href="#/users/login">登陆</a></li>
+       </ul>
+   </div>
+   <div class="row" ng-view>
+       
+   </div>  
+   </div>
+   
+</body>
+<script src="/lib/jquery/dist/jquery.js"></script>
+<script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+<script src="/lib/angular/angular.js"></script>
+<script src="/lib/angular-route/angular-route.js"></script>
+<script>
+    var app=angular.module('shopApp',['ngRoute']);
+    app.config(function($routeProvider,$locationProvider){
+        $routeProvider.when('/',{
+            templateUrl:'pages/home.html',
+            controller:'HomeCtrl'
+        }).when('/home',{
+            templateUrl:'pages/home.html',
+            controller:'HomeCtrl'
+        }).otherwise({
+            redirectTo:'/'
+        });
+    });
+    app.controller('HomeCtrl',function($scope){
+        $scope.title='珠峰商城';
+    });
+    app.controller('NavBarCtrl',function(){
+        
+    });
+</script>
+</html>
