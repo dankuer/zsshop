@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dankuer/zhufengshop.git"
+    "url": "git+https://github.com/dankuer/zsshop.git"
   },
   "keywords": [
     "bower",
@@ -18,9 +18,9 @@
   "author": "dankuer",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dankuer/zhufengshop/issues"
+    "url": "https://github.com/dankuer/zsshop/issues"
   },
-  "homepage": "https://github.com/dankuer/zhufengshop#readme",
+  "homepage": "https://github.com/dankuer/zsshop#readme",
   "dependencies": {
     "express": "^4.13.4",
     "morgan": "^1.7.0"

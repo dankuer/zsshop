@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <title>Document</title>
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css"/>
+    <style>
+        body{
+            margin-top: 70px;
+        }
+    </style>
 </head>
 <body>
-   <div class="container">
+  
      <div class="navbar navbar-default navbar-fixed-top" role="navigation" ng-controller="NavBarCtrl">
        <div class="navbar-header">
            <a href="#" class="navbar-brand">珠峰商城</a>
@@ -20,7 +25,7 @@
    <div class="row" ng-view>
        
    </div>  
-   </div>
+  
    
 </body>
 <script src="/lib/jquery/dist/jquery.js"></script>
@@ -33,6 +38,12 @@
         $routeProvider.when('/',{
             templateUrl:'pages/home.html',
             controller:'HomeCtrl'
+        }).when('/users/reg',{
+            templateUrl:'pages/reg.html',
+            controller:'RegCtrl'
+        }).when('/users/login',{
+            templateUrl:'pages/login.html',
+            controller:'LoginCtrl'
         }).when('/home',{
             templateUrl:'pages/home.html',
             controller:'HomeCtrl'
@@ -43,7 +54,16 @@
     app.controller('HomeCtrl',function($scope){
         $scope.title='珠峰商城';
     });
-    app.controller('NavBarCtrl',function(){
+    app.controller('RegCtrl',function($scope){
+        $scope.title='注册';
+        $scope.save=function(){
+            console.log('saving');
+        };
+    });
+    app.controller('LoginCtrl',function($scope){
+        $scope.title='登陆';
+    });
+    app.controller('NavBarCtrl',function($scope){
         
     });
 </script>
