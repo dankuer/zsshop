@@ -2,7 +2,7 @@
 <html lang="en" ng-app="shopApp">
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>前后端分离的商城项目</title>
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css"/>
     <style>
         body{
@@ -14,12 +14,23 @@
   
      <div class="navbar navbar-default navbar-fixed-top" role="navigation" ng-controller="NavBarCtrl">
        <div class="navbar-header">
-           <a href="#" class="navbar-brand">珠峰商城</a>
+           <a href="#/home" class="navbar-brand">珠峰商城</a>
        </div>
        <ul class="nav navbar-nav">
-           <li><a href="#/home">首页</a></li>
-           <li><a href="#/users/reg">注册</a></li>
-           <li><a href="#/users/login">登陆</a></li>
+           <li ng-show="me" ng-class="{active:isActive('/home')}"><a href="#/home">首页</a></li>
+           <li ng-hide="me" ng-class="{active:isActive('/users/reg')}"><a href="#/users/reg">注册</a></li>
+           <li ng-hide="me" ng-class="{active:isActive('/users/login')}"><a href="#/users/login">登陆</a></li>
+           <li ng-show="me" ng-class="{active:isActive('/wares/admin/list')}"><a href="#/wares/admin/list">列表</a></li>
+       </ul>
+       <ul class="nav-navbar-nav navbar-right" ng-show="me">
+           <li class="dropdown">
+               <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                   <img ng-src="{{me.avatar}}" alt="{{me.username}}" style="width:15px;height:15px;"/>{{me.username}} <span class="caret"></span>
+               </a>
+               <ul class="dropdown-menu dropdown-menu-left">
+                   <li ><a href="#" ng-click="logout()">退出</a></li>
+               </ul>
+           </li>
        </ul>
    </div>
    <div class="row" ng-view>
@@ -39,17 +50,124 @@
             templateUrl:'pages/home.html',
             controller:'HomeCtrl'
         }).when('/users/reg',{
-            templateUrl:'pages/reg.html',
+            templateUrl:'pages/user/reg.html',
             controller:'RegCtrl'
         }).when('/users/login',{
-            templateUrl:'pages/login.html',
+            templateUrl:'pages/user/login.html',
             controller:'LoginCtrl'
         }).when('/home',{
             templateUrl:'pages/home.html',
             controller:'HomeCtrl'
+        }).when('/wares/admin/list',{
+            templateUrl:'pages/ware/admin/list.html',
+            controller:'WareCtrl'
         }).otherwise({
             redirectTo:'/'
         });
+    });
+    app.run(function($http,$location,$rootScope){
+        $http({
+            url:'/users/validate',
+            method:'POST'
+        }).success(function(user){
+            $rootScope.me=user;
+            $location.path('/home');
+        }).error(function(msg){
+            console.log(msg.msg);
+            $location.path('/users/login');
+        });
+    });
+    app.controller('WareCtrl',function($scope,$http,fileReader){
+        $scope.keyword="";
+        $scope.wares=[{name:'iphone4',price:'4',imgSrc:''}];
+        $http({
+            url:'wares/list',
+            method:'GET'
+        }).success(function(wares){
+            $scope.wares=wares;
+        });
+        $scope.filter=function(){
+            
+        }
+        
+        $scope.pages=[1,2,3];
+        $scope.save=function(){
+            var fd=new FormData();
+            angular.forEach($scope.ware,function(val,key){
+                console.info(key+' : '+val);
+                fd.append(key,val);
+            });
+            console.info(fd);
+            var option={
+                url:'/wares/add',
+                method:'POST',
+                data:fd,
+                headers:{'Content-Type':undefined},
+                transformRequest:angular.identity
+            }
+            $http(option).success(function(ware){
+                $scope.wares.push(ware);
+            });
+        }
+        $scope.getFile=function(){
+            var s=fileReader.readAsDataUrl($scope.file,$scope);
+            s.then(function(result){
+                $scope.ware.imgSrc=result;
+            });
+        }
+    });
+    app.directive('addWares',function(){
+        return {
+            link:function(scope,element,attrs){
+                element.click(function(){
+                    scope.$apply(function(){
+                        scope.ware={};
+                    });
+                    $('#addDialog').modal(true);
+                });
+            }
+        }
+    });
+    app.directive('fileModel',function(){
+       return{
+           link:function(scope,element,attrs){
+              element.bind('change',function(event){
+                  scope.file=element[0].files[0];
+                  scope.getFile();
+              }); 
+           }
+       } 
+    });
+    app.factory('fileReader',function($q){
+        var onLoad=function(reader,deferred,scope){
+            return function(){
+                scope.$apply(function(){
+                    deferred.resolve(reader.result);
+                });
+            }
+        }
+        var onError=function(reader,deferred,scope){
+            return function(){
+                scope.$apply(function(){
+                    deferred.reject(reader.result);
+                });
+            }
+        }
+        var getReader=function(deferred,scope){
+            var reader=new FileReader();
+            reader.onload=onLoad(reader,deferred,scope);
+            reader.onerror=onError(reader,deferred,scope);
+            return reader;
+        }
+        var readAsDataURL=function(file,scope){
+            var deferred=$q.defer();
+            var reader=getReader(deferred,scope);
+            reader.readAsDataURL(file);
+            return deferred.promise;
+        }
+        return {
+            readAsDataUrl:readAsDataURL
+        }
     });
     app.controller('HomeCtrl',function($scope){
         $scope.title='珠峰商城';
@@ -70,7 +188,7 @@
             
         };
     });
-    app.controller('LoginCtrl',function($scope,$location,$http){
+    app.controller('LoginCtrl',function($scope,$location,$http,$rootScope){
         $scope.title='登陆';
         $scope.login=function(){
             $http({
@@ -78,15 +196,31 @@
                 method:'POST',
                 data:$scope.user
             }).success(function(user){
+                $rootScope.me=user;
                 $location.path('/home');
                 console.log('登陆成功:'+JSON.stringify(user));
             }).error(function(data){
                 console.error('登陆失败:'+data);
             });
+            return false;
         }
     });
-    app.controller('NavBarCtrl',function($scope){
-        
+    app.controller('NavBarCtrl',function($scope,$http,$rootScope,$location){
+        $scope.title='导航';
+        $scope.isActive=function(str){
+            return str==$location.path();
+        }
+        $scope.logout=function(){
+            $http({
+                url:'/users/logout',
+                method:'POST'
+            }).success(function(){
+                $rootScope.me=null;
+                $location.path('/users/login');
+            }).error(function(){
+                $location.path('/users/login')
+            });
+        }
     });
 </script>
 </html>

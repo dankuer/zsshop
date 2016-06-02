@@ -27,8 +27,25 @@ router.post('/login',function(req,res){
         if(err){
             res.status(500).json({msg:err});
         }else{
-            res.json(user);
+            req.session.user=user;
+            res.status(200).json(user);            
         }
     });
 });
+router.post('/validate',function(req,res){
+    var user=req.session.user;
+    if(user&&user._id){
+        res.status(200).json(user);
+    }else{
+        res.status(401).json({
+            msg:'用户未登陆'
+        });
+    }
+});
+router.post('/logout',function(req,res){
+    req.session.user=null;
+    res.status(200).json({
+        msg:'success'
+    });
+})
 module.exports=router;
